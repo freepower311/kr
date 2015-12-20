@@ -5,6 +5,7 @@
 //#include "mystack.h"
 #include <cstdlib>
 #include <ctime>
+#include <QTreeWidget>
 ///Элемент дерева.
 /*
  *Структура данных. Представляет собой элемент дерева.
@@ -12,7 +13,9 @@
 template<typename T>
 struct NodeBTree
 {
-    T val;
+    T val1;
+    T val2;
+    T val3;
     NodeBTree* left;
     NodeBTree* right;
     NodeBTree()
@@ -31,7 +34,7 @@ template<typename T>
 class MyBinTree
 {
     NodeBTree<T>* head;
-    NodeBTree<T>* head;
+    //NodeBTree<T>* head;
     //std::string str;
     //int ind;
     //int len;
@@ -41,8 +44,8 @@ public:
     MyBinTree()
     {
         head = NULL;
-        ind = 0;
-		len =0;
+        //ind = 0;
+        //len =0;
     }
 	~MyBinTree()
     {
@@ -50,6 +53,7 @@ public:
         {
             deleteAllElem(head);
         }
+        head = NULL;
     }
     void clear()
     {
@@ -57,6 +61,7 @@ public:
         {
             deleteAllElem(head);
         }
+        head = NULL;
     }
     ///Выводит дерево в QTreeWidget для графического представления
 	void printTree(QTreeWidget* widget) 
@@ -64,7 +69,9 @@ public:
  	   QTreeWidgetItem* root = new QTreeWidgetItem(widget);
        //root->setText(0, QString("root"));
        std::string str;
-       writeVal(head->val,str);
+       writeVal(head->val1,str);
+       writeVal(head->val2,str);
+       writeVal(head->val3,str);
        root->setText(0, QString::fromStdString(str));
  	   printTree(root, head);
  	   widget->addTopLevelItem(root);
@@ -81,32 +88,50 @@ public:
 	///Считывает бинарное дерево из строки со скобочным представлением дерева и формирует его
     void random(int h)
     {
-        char ch;
+        //char ch;
         srand(time(NULL));
-        for (int i = 1; hight(head) < h; i++)
+        for (int i = 0; i < h; i++)
         {
-            ch =  rand() % 25 + 'a';
-            push(ch);
+            //ch =  rand() % 25 + 'a';
+            push((char)(rand() % 25 + 'a'),(char)(rand() % 25 + 'a'),(char)(rand() % 25 + 'a'));
         }
     }
-    bool push(char ch)
+    bool push(char ch1,char ch2,char ch3)
     {
-        pushRec(head, ch);
+       return pushRec(head, ch1,ch2,ch3);
     }
-    bool deleteNode()
+    /*bool deleteNode()
     {
 
-    }
+    }*/
 private:
-    bool pushRec(NodeBTree<T>* cur, char ch)
+    bool pushRec(NodeBTree<T>* &cur, char ch1,char ch2,char ch3)
     {
-        if(cur == NULL) cur = cons(ch,NULL,NULL);
+        if(cur == NULL)
+        {
+            cur = cons(ch1,ch2,ch3,NULL,NULL);
+            return 1;
+        }
+        bool e1 = 0,
+                e2 = 0,
+                e3 = 0;
+        if (cur->val1 == ch1) e1 = 1;
+        if (cur->val2 == ch2) e2 = 1;
+        if (cur->val3 == ch3) e3 = 1;
+        if (e1 && e2 && e3) return 0;
+        if (cur->val1 < ch1) return pushRec(cur->left,ch1,ch2,ch3);
+        if (e1 && cur->val2 < ch2) return pushRec(cur->left,ch1,ch2,ch3);
+        else return pushRec(cur->right,ch1,ch2,ch3);
+        if (e2 && cur->val3 < ch3)return pushRec(cur->left,ch1,ch2,ch3);
+        else return pushRec(cur->right,ch1,ch2,ch3);
     }
 	///Специальная функция для вывода дерева
     void printTree(QTreeWidgetItem*& item, NodeBTree<T>*& node)
 	{
 		std::string str;
-        writeVal(node->val,str);
+        writeVal(node->val1,str);
+        writeVal(node->val2,str);
+        writeVal(node->val3,str);
         item->setText(0, QString::fromStdString(str));
         str.clear();
         if (node->left != NULL) {
@@ -133,16 +158,18 @@ private:
         else return ++r;
     }
 	///Функция формирования узла дерева
-    NodeBTree<T>* cons(T nval,NodeBTree<T>* lt,NodeBTree<T>* rt)
+    NodeBTree<T>* cons(T nval1,T nval2,T nval3,NodeBTree<T>* lt,NodeBTree<T>* rt)
     {
         NodeBTree<T>* ntree = new NodeBTree<T>;
-        ntree->val = nval;
+        ntree->val1 = nval1;
+        ntree->val2 = nval2;
+        ntree->val3 = nval3;
         ntree->left = lt;
         ntree->right = rt;
         return ntree;
     }
     ///Специальная рекурсивная функция построения дерева
-    NodeBTree<T>* enter()
+    /*NodeBTree<T>* enter()
     {
         NodeBTree<T>* lt;
         NodeBTree<T>* rt;
@@ -168,9 +195,9 @@ private:
             if(readVal(nval)) return cons(nval,NULL,NULL);
             else return NULL;
         }
-    }
+    }*/
 	///Функция чтения целого значения элемента дерева
-    bool readVal(int & nval)
+    /*bool readVal(int & nval)
     {
         if(str[ind] == ' ') do ind++ ; while(str[ind] == ' ' && ind < len);
         if(ind >= len) return 0;
@@ -195,9 +222,9 @@ private:
                     return 1;
                 }
                 else return 0;
-    }
+    }*/
 	///Функция чтения буквенного элемента дерева
-    bool readVal(char & nval)
+    /*bool readVal(char & nval)
     {
         //int ajksdf =aksujd;
         //ind++;
@@ -206,9 +233,9 @@ private:
         //if(nil)?
         nval = str[ind++];
         return 1;
-    }
+    }*/
     ///Функция чтения логического(true/false) элемента дерева
-    bool readVal(bool & nval)
+    /*bool readVal(bool & nval)
     {
         if(str[ind] == ' ') do ind++ ; while(str[ind] == ' ' && ind < len);
         if(ind >= len) return 0;
@@ -218,9 +245,9 @@ private:
         if(str[ind] == '0') nval = false;
         ind++;
         return 1;
-    }
+    }*/
 	///Функция чтения значения с плавающей запятой элемента дерева
-    bool readVal(double & nval)
+    /*bool readVal(double & nval)
     {
         if(str[ind] == ' ') do ind++ ; while(str[ind] == ' ' && ind < len);
         if(ind >= len) return 0;
@@ -229,13 +256,15 @@ private:
         nval = 0;
         ind++;
         return 1;
-    }
+    }*/
 	///Специальная функция записи скобочного представления дерева
     void write(std::string &str, NodeBTree<T>* cur)
     {
         if(cur == NULL) return;
         if (cur->left != NULL || cur->right != NULL)str += "( ";
-        writeVal(cur->val,str);
+        writeVal(cur->val1,str);
+        writeVal(cur->val2,str);
+        writeVal(cur->val3,str);
         str += ' ';
         if(cur->left != NULL) write(str, cur->left);
         if(cur->right != NULL) write(str, cur->right);
