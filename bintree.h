@@ -35,7 +35,8 @@ class MyBinTree
     //std::string str;
     //int ind;
     //int len;
-
+	//Double trouble
+	//Triple trouble
 public:
     MyBinTree()
     {
